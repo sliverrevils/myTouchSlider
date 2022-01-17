@@ -26,19 +26,17 @@ const changePicture = ({ element, side }) => { // side - left rigth top bottom
 
     $nowPic.src = picsArr[$nowPic.now];
 
-    //console.log(side);
+    return true;
 }
 
 
 
 
-'ontouchstart' in window ? addSwips($picBlock) : console.log("PC");
+'ontouchstart' in window ? addSwips($picBlock) : addClicks($picBlock); //   TOUCHES || CLICKS
 
-function addSwips(element) {
-
+//-------------- ADD SWIPE 
+function addSwips(element) { 
     console.log("SENSOR SCREEN");
-
-
 
     let firstTouch = {},
         lastTouch = {};
@@ -50,12 +48,26 @@ function addSwips(element) {
             Ypix = firstTouch.y - lastTouch.y;
         // Math.abs(Xpix) >= 100 && (Xpix > 0 && console.log("left") || (Xpix < 0 && console.log("right")));
         // Math.abs(Ypix) >= 100 && (Ypix > 0 && console.log("top") || (Ypix < 0 && console.log("bottom")));
-        Math.abs(Xpix) >= 100 && (Xpix > 0 && changePicture({ element, side: "left" }) || Xpix < 0 && changePicture({ element, side: "right" }));
-        Math.abs(Ypix) >= 50 && (Ypix > 0 && changePicture({ element, side: "top" }) || (Ypix < 0 && changePicture({ element, side: "bottom" })));
+        Math.abs(Xpix) >= 100 && (Xpix > 0 && changePicture({ element, side: "left" }) || Xpix < 0 && changePicture({ element, side: "right" }) && console.log("SWIPE"));
+        Math.abs(Ypix) >= 50 && (Ypix > 0 && changePicture({ element, side: "top" }) || Ypix < 0 && changePicture({ element, side: "bottom" }) && console.log("SWIPE"));
     }
 
-    element.addEventListener('touchstart', e => firstTouch = getPositionXY(e));
-    element.addEventListener('touchmove', e => lastTouch = getPositionXY(e));
+    element.addEventListener('touchstart', e => (firstTouch = getPositionXY(e))&&e.preventDefault());
+    element.addEventListener('touchmove', e => (lastTouch = getPositionXY(e))&&e.preventDefault());
     element.addEventListener('touchend', () => isSwipe(element));
 }
 
+//-------------- ADD CLICKS
+function addClicks(element){
+    console.log("MOUSE CLICKS");       
+    
+    element.addEventListener('click',e=>{
+        e.preventDefault();
+        console.log("CLICK")
+        //console.log("BLOCK SIZE",e.target.width,e.target.height);
+        //console.log("CLICK POS ON BLOCK",e,e.offsetX,e.offsetY);        
+        
+         e.offsetX <= (e.target.width / 3)  && changePicture({ element, side: "left" });
+         e.offsetX >= (e.target.width / 3*2) && changePicture({ element, side: "right" });
+    }); 
+}
