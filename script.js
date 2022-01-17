@@ -1,10 +1,10 @@
 //if('ontouchstart' in window)console.log("SENSOR SCREEN"); else console.log("PC");
-$picBlock=document.querySelector('.pic_block');
-$nowPic=$picBlock.querySelector('img');
-$nowPic.now=0;
+$picBlock = document.querySelector('.pic_block');
+$nowPic = $picBlock.querySelector('img');
+$nowPic.now = 0;
 
 
-const picsArr =[
+const picsArr = [
     "https://static1.bigstockphoto.com/4/7/2/large1500/274864510.jpg",
     "https://img3.goodfon.ru/original/1600x1200/2/5a/pasture-the-bavarian-alps.jpg",
     "https://getwallpapers.com/wallpaper/full/7/e/6/230639.jpg",
@@ -13,19 +13,21 @@ const picsArr =[
     "https://wallpapercave.com/wp/wp2011921.jpg",
     "https://s1.1zoom.ru/b5050/295/285963-alexfas01_1920x1200.jpg"
 ]
-$nowPic.src=picsArr[0];
+$nowPic.src = picsArr[0];
 
 
-const changePicture=({element,side})=>{ // side - left rigth top bottom
-   switch(side){
-       case "right":$nowPic.now<picsArr.length-1&&++$nowPic.now;break;
-       case "left":$nowPic.now>0&&--$nowPic.now;break;
-   }
-
-   $nowPic.src=picsArr[$nowPic.now];
-    
-    //console.log(side);
+const changePicture = ({ element, side }) => { // side - left rigth top bottom
+    switch (side) {
+        case "left": $nowPic.now < picsArr.length - 1 && ++$nowPic.now||$nowPic.now==picsArr.length-1&&($nowPic.now=0);
+        break;
+        case "right": ($nowPic.now > 0 && --$nowPic.now)||( $nowPic.now==0&&($nowPic.now=picsArr.length-1)); 
+        break;
     }
+
+    $nowPic.src = picsArr[$nowPic.now];
+
+    //console.log(side);
+}
 
 
 
@@ -36,7 +38,7 @@ function addSwips(element) {
 
     console.log("SENSOR SCREEN");
 
-    
+
 
     let firstTouch = {},
         lastTouch = {};
@@ -46,10 +48,10 @@ function addSwips(element) {
     const isSwipe = (el) => {
         let Xpix = firstTouch.x - lastTouch.x,
             Ypix = firstTouch.y - lastTouch.y;
-       // Math.abs(Xpix) >= 100 && (Xpix > 0 && console.log("left") || (Xpix < 0 && console.log("right")));
-       // Math.abs(Ypix) >= 100 && (Ypix > 0 && console.log("top") || (Ypix < 0 && console.log("bottom")));
-        Math.abs(Xpix) >= 100 && (Xpix > 0 && changePicture({element,side:"left"}) || Xpix < 0 && changePicture({element,side:"right"}));
-        Math.abs(Ypix) >= 50 && (Ypix > 0 && changePicture({element,side:"top"}) || (Ypix < 0 && changePicture({element,side:"bottom"})));
+        // Math.abs(Xpix) >= 100 && (Xpix > 0 && console.log("left") || (Xpix < 0 && console.log("right")));
+        // Math.abs(Ypix) >= 100 && (Ypix > 0 && console.log("top") || (Ypix < 0 && console.log("bottom")));
+        Math.abs(Xpix) >= 100 && (Xpix > 0 && changePicture({ element, side: "left" }) || Xpix < 0 && changePicture({ element, side: "right" }));
+        Math.abs(Ypix) >= 50 && (Ypix > 0 && changePicture({ element, side: "top" }) || (Ypix < 0 && changePicture({ element, side: "bottom" })));
     }
 
     element.addEventListener('touchstart', e => firstTouch = getPositionXY(e));
